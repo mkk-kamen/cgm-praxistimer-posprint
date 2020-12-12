@@ -36,8 +36,7 @@ sudo apt-get install libgssapi-krb5-2
 
 ## Usage
 
-![Start program]
-(res/cgm-praxistimer-posprint.png)
+![Start program](res/cgm-praxistimer-posprint.png)
 
 ## Dependencies
 
