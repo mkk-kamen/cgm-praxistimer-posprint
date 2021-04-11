@@ -21,26 +21,21 @@ $conn = sqlsrv_connect($serverName, $connectionInfo);
 
 if( $conn ) {
     if( isset($_GET['id']) && $_GET['id'] != "" ) {
-        $sql = "
-        DECLARE @StartTime DATETIME = '1899/30/12 07:00:00',
-                @Datum DATETIME = '1899/30/12' 
-        SELECT 
-            FORMAT(DATEADD(day,[datum], @Datum), 'dd.MM.yyyy') as datum,
-            FORMAT(DATEADD(minute, (([von] - 85) * 5), @StartTime), 'HH:mm') as von,
-            FORMAT(DATEADD(minute, (([bis] - 85) * 5) + 5, @StartTime), 'HH:mm') as bis,
-            CASE WHEN namelang IS NULL THEN 'Not-Patient' ELSE [namelang] END as leistung,
-            CASE WHEN behandler IS NULL THEN 'Not-Patient' WHEN behandler = '7' THEN 'T. Bannasch' WHEN behandler = '8' THEN 'C. Lobitz' WHEN behandler = '9' THEN 'Labor' WHEN behandler = '10' THEN 'Technik/EKG' ELSE p.name END as behandler,
-            [patientname],
-            [patientvorname] 
-        FROM [PRAXISTIMER].[dbo].[termine] AS t 
-        LEFT JOIN [PRAXISTIMER].dbo.leistung AS l ON t.leistungsnr = l.leistungsnr 
-        LEFT JOIN [PRAXISTIMER].dbo.person AS p ON p.id = t.behandler + 1 
-        WHERE 
-            patientnr = ".$_GET['id']."1 
-        AND 
-            CAST(datum as datetime) > DATEADD(day, 2, getdate()) 
-        AND 
-            CAST(datum as datetime) < DATEADD(day, 365, getdate())     
+	    $sql = "
+        SELECT
+         datum,
+         von, bis,
+         leistung,
+         behandler,
+         patientname,
+         patientvorname
+        FROM [METABASE].[dbo].[TIMER]
+        WHERE
+         patientnr = ".$_GET['id']."
+        AND
+         CAST (datum as datetime) > DATEADD(day, 2, getdate())
+        AND
+         CAST (datum as datetime) < DATEADD(day, 365, getdate())
         ORDER BY CAST(datum as datetime), von";
 
 
@@ -96,7 +91,7 @@ if( $conn ) {
                     </div>
                     <div class="row">
                         <div class="small-12 column text-center no-print-spacing">
-                            <p class="covidHint"><b>+++ Aktueller Hinweis +++</b><br/>Aufgrund der aktuellen Corona-Pandemie, informieren<br/>Sie sich bitte vor <u>jedem</u> Besuch im MKK über etwaige geänderte Abläufe auf unserer Internetseite unter<br/><b>www.mkk-kamen.de</b><br/>Bleiben Sie gesund!</p>
+                            <p class="covidHint"><b>+++ Aktueller Hinweis +++</b><br/>Aufgrund der aktuellen Corona-Pandemie, informieren Sie sich bitte vor <u>jedem</u> Besuch<br/>im MKK über etwaige geänderte Abläufe<br/>auf unserer Internetseite unter<br/><b>www.mkk-kamen.de</b><br/>Bleiben Sie gesund!</p>
                         </div>
                     </div>
                     <h1>Termine für<em><?php echo $row['patientname'] . ", " . $row['patientvorname']; ?></em></h1>
@@ -160,7 +155,7 @@ if( $conn ) {
         </table>
         <div class="row">
             <div class="small-12 column text-center no-print-spacing">
-                <p class="rxHint">Schon gewusst? Sie können Ihre Rezepte und<br/>Überweisungen ganz bequem per Telefon vorbestellen,<br/>nutzen Sie dazu unsere Rezept Mailbox unter<br/><b>02307 - 97372 - 22</b>.</p>
+                <p class="rxHint">Schon gewusst? Sie können Ihre Rezepte<br/>und Überweisungen ganz bequem<br/>per Telefon vorbestellen,<br/>nutzen Sie dazu unsere<br/>Rezept Mailbox unter<br/><b>02307 - 97372 - 22</b>.</p>
             </div>
         </div>
         <div class="row">
@@ -170,7 +165,7 @@ if( $conn ) {
         </div>
         <div class="row">
             <div class="small-12 column text-center no-print-spacing">
-                <p class="imprint"><b>Medizinisches Kompetenzkollegium Kamen</b><br/>Gemeinschaftspraxis M. M. Nickertz & Dr. med. K. König<br/>Westicker Str. 1<br/>59174 Kamen<br/><br/>Telefon: 02307 - 97372 - 0<br/>Telefax: 02307 - 97372 - 20<br/><br>kontakt@mkk-kamen.de<br/>www.mkk-kamen.de</p>
+                <p class="imprint"><b>Medizinisches Kompetenzkollegium Kamen</b><br/>Gemeinschaftspraxis<br/>M. M. Nickertz & Dr. med. K. König<br/>Westicker Str. 1<br/>59174 Kamen<br/><br/>Telefon: 02307 - 97372 - 0<br/>Telefax: 02307 - 97372 - 20<br/><br>kontakt@mkk-kamen.de<br/>www.mkk-kamen.de</p>
             </div>
         </div>
         <div class="row">
